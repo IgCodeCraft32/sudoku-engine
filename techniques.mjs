@@ -1,5 +1,5 @@
-import { hasDuplicates } from "./engine";
-import { EffectType } from "./enums";
+import { hasDuplicates } from "./engine.mjs";
+import { EffectType } from "./enums.mjs";
 
 export const log = (name, answers) => {
   // if (answers.length > 0) console.log(name, answers);
@@ -42,7 +42,7 @@ export const checkBoardStatus = (board) => {
         empty0To8s().flatMap((j) => {
           const { row, col } = squareNum2RowCol(i, j);
           return board[row][col].value;
-        }),
+        })
       )
     )
       return false;
@@ -159,7 +159,7 @@ export const findLastRemainingCell = (board) => {
       }
     }
     const remainingValues = empty1To9s().filter(
-      (item) => !usedValues.has(item),
+      (item) => !usedValues.has(item)
     );
 
     remainingPos.forEach((pos, idx) => {
@@ -179,7 +179,7 @@ export const findLastRemainingCell = (board) => {
               board,
               remainingPos[k][0],
               remainingPos[k][1],
-              value,
+              value
             );
             if (effectedCell) pivots.push(effectedCell);
             else isAvailable = false;
@@ -230,7 +230,7 @@ export const findLastPossibleNumber = (board) => {
           usedValues.add(
             board[squareOrigin[0] + (k % 3)][
               squareOrigin[1] + Math.floor(k / 3)
-            ].value,
+            ].value
           );
         }
         let candidates = empty1To9s().filter((item) => !usedValues.has(item));
@@ -290,7 +290,7 @@ export const findObviousPairs = (board) => {
   // implement the obvious pair technique
   candidatesBySquare.forEach((candidatesInSquare, squareNumber) => {
     let twoDigitCandidates = candidatesInSquare.filter(
-      (item) => item.candidates.length === 2,
+      (item) => item.candidates.length === 2
     );
     if (twoDigitCandidates.length >= 2) {
       const candidatesMap = new Map();
@@ -313,7 +313,7 @@ export const findObviousPairs = (board) => {
               index: squareNumber,
               values: effectNumbers,
               cells: items.map(
-                ({ pos }) => rowCol2SquareNum(pos[0], pos[1]).num,
+                ({ pos }) => rowCol2SquareNum(pos[0], pos[1]).num
               ),
             });
           }
@@ -384,7 +384,7 @@ export const findObviousTriples = (board) => {
   // implement the obvious triple technique
   candidatesBySquare.forEach((candidatesInSquare, squareNumber) => {
     let twoDigitCandidates = candidatesInSquare.filter(
-      (item) => item.candidates.length === 2,
+      (item) => item.candidates.length === 2
     );
     if (twoDigitCandidates.length >= 3) {
       const combinations = [];
@@ -394,20 +394,20 @@ export const findObviousTriples = (board) => {
             if (
               has3UniqueCandidates(
                 twoDigitCandidates[i],
-                twoDigitCandidates[j],
+                twoDigitCandidates[j]
               ) &&
               has3UniqueCandidates(
                 twoDigitCandidates[j],
-                twoDigitCandidates[k],
+                twoDigitCandidates[k]
               ) &&
               has3UniqueCandidates(
                 twoDigitCandidates[k],
+                twoDigitCandidates[i]
+              ) &&
+              has3UniqueCandidates(
                 twoDigitCandidates[i],
-              ) &&
-              has3UniqueCandidates(
-                twoDigitCandidates[i],
                 twoDigitCandidates[j],
-                twoDigitCandidates[k],
+                twoDigitCandidates[k]
               )
             )
               combinations.push([
@@ -503,7 +503,7 @@ export const findHiddenSingles = (board) => {
     return Array.from(uniqueSet)
       .map((value) => {
         const cell_Idx = cells.findIndex(
-          ({ candidates }) => candidates.indexOf(value) > -1,
+          ({ candidates }) => candidates.indexOf(value) > -1
         );
         // remove the obvious single case
         if (cells[cell_Idx].candidates.length > 1) {
@@ -553,7 +553,7 @@ export const findHiddenPairs = (board) => {
   const containedCell = (cells, candidate) =>
     cells
       .map(({ candidates }, idx) =>
-        candidates.indexOf(candidate) > -1 ? idx : -1,
+        candidates.indexOf(candidate) > -1 ? idx : -1
       )
       .filter((item) => item > -1)
       .sort();
@@ -641,7 +641,7 @@ export const findHiddenTriples = (board) => {
   const containedCell = (cells, candidate) =>
     cells
       .map(({ candidates }, idx) =>
-        candidates.indexOf(candidate) > -1 ? idx : -1,
+        candidates.indexOf(candidate) > -1 ? idx : -1
       )
       .filter((item) => item > -1)
       .sort();
@@ -738,7 +738,7 @@ export const findPointingPairs = (board) => {
   const containedCell = (cells, candidate) =>
     cells
       .map(({ candidates }, idx) =>
-        candidates.indexOf(candidate) > -1 ? idx : -1,
+        candidates.indexOf(candidate) > -1 ? idx : -1
       )
       .filter((item) => item > -1)
       .sort();
@@ -838,7 +838,7 @@ export const findPointingTriples = (board) => {
   const containedCell = (cells, candidate) =>
     cells
       .map(({ candidates }, idx) =>
-        candidates.indexOf(candidate) > -1 ? idx : -1,
+        candidates.indexOf(candidate) > -1 ? idx : -1
       )
       .filter((item) => item > -1)
       .sort();
@@ -1054,7 +1054,7 @@ export const findXWing = (board) => {
 
     // Step 2-1: Find X-wing pattern on row
     const possibleRows = Array.from(uniqueRows.entries()).filter(
-      ([_, cols]) => cols.size === 2,
+      ([_, cols]) => cols.size === 2
     );
     if (possibleRows.length >= 2)
       for (let i = 0; i < possibleRows.length - 1; i++) {
@@ -1068,8 +1068,7 @@ export const findXWing = (board) => {
             Math.floor(cols[0] / 3) !== Math.floor(cols[1] / 3)
           ) {
             const eliminatableCells = cells.filter(
-              (item) =>
-                cols.has(item[1]) && item[0] !== row && item[0] !== row2,
+              (item) => cols.has(item[1]) && item[0] !== row && item[0] !== row2
             );
             if (eliminatableCells.length > 0) {
               const colsArray = Array.from(cols);
@@ -1092,7 +1091,7 @@ export const findXWing = (board) => {
 
     // Step 2-2: Find X-wing pattern on col
     const possibleCols = Array.from(uniqueCols.entries()).filter(
-      ([_, rows]) => rows.size === 2,
+      ([_, rows]) => rows.size === 2
     );
     if (possibleCols.length >= 2)
       for (let i = 0; i < possibleCols.length - 1; i++) {
@@ -1106,8 +1105,7 @@ export const findXWing = (board) => {
             Math.floor(rows[0] / 3) !== Math.floor(rows[1] / 3)
           ) {
             const eliminatableCells = cells.filter(
-              (item) =>
-                rows.has(item[0]) && item[1] !== col && item[1] !== col2,
+              (item) => rows.has(item[0]) && item[1] !== col && item[1] !== col2
             );
             if (eliminatableCells.length > 0) {
               const rowsArray = Array.from(rows);
@@ -1145,7 +1143,7 @@ export const findXWing = (board) => {
     if (xWingCandidates.length >= 5) {
       const results = findXWingForValue(xWingCandidates);
       results.forEach(({ type, wing, cells, rows, cols }) =>
-        answers.push({ type, wing, cells, rows, cols, value: k }),
+        answers.push({ type, wing, cells, rows, cols, value: k })
       );
     }
   }
@@ -1179,7 +1177,7 @@ export const findSwordfish = (board) => {
 
     // Step 2-1: Find Sword Fish pattern on row
     const possibleRows = Array.from(uniqueRows.entries()).filter(
-      ([_, cols]) => cols.size === 2,
+      ([_, cols]) => cols.size === 2
     );
     if (possibleRows.length >= 3)
       for (let i = 0; i < possibleRows.length - 2; i++) {
@@ -1207,7 +1205,7 @@ export const findSwordfish = (board) => {
                   commonCols.has(item[1]) &&
                   item[0] !== row &&
                   item[0] !== row2 &&
-                  item[0] !== row3,
+                  item[0] !== row3
               );
               if (eliminatableCells.length > 0)
                 results.push({
@@ -1231,7 +1229,7 @@ export const findSwordfish = (board) => {
 
     // Step 2-2: Find Sword Fish pattern on col
     const possibleCols = Array.from(uniqueCols.entries()).filter(
-      ([_, rows]) => rows.size === 2,
+      ([_, rows]) => rows.size === 2
     );
     if (possibleCols.length >= 3)
       for (let i = 0; i < possibleCols.length - 2; i++) {
@@ -1259,7 +1257,7 @@ export const findSwordfish = (board) => {
                   commonRows.has(item[0]) &&
                   item[1] !== col &&
                   item[1] !== col2 &&
-                  item[1] !== col3,
+                  item[1] !== col3
               );
               if (eliminatableCells.length > 0)
                 results.push({
@@ -1301,7 +1299,7 @@ export const findSwordfish = (board) => {
     if (xWingCandidates.length >= 7) {
       const results = findSwordForFish(xWingCandidates);
       results.forEach(({ type, wing, cells, rows, cols }) =>
-        answers.push({ type, wing, cells, rows, cols, value: fishNumber }),
+        answers.push({ type, wing, cells, rows, cols, value: fishNumber })
       );
     }
   }

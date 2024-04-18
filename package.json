@@ -1,0 +1,13 @@
+{
+  "name": "sudoku-engine",
+  "version": "1.0.0",
+  "description": "generate sudoku games according to difficulties",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "dev": "nodemon ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

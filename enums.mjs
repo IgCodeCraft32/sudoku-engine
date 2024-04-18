@@ -13,7 +13,7 @@ import {
   findYWing,
   findXWing,
   findSwordfish,
-} from "./techniques";
+} from "./techniques.mjs";
 
 import {
   eliminateCandidates,
@@ -22,7 +22,7 @@ import {
   executeYWing,
   executeXWing,
   putValueOnCell,
-} from "./executors";
+} from "./executors.mjs";
 
 export const GameMode = {
   CLASSIC: 0,
@@ -32,7 +32,7 @@ export const GameMode = {
 export const GameConfig = {
   [GameMode.CLASSIC]: {
     difficulty: ["Easy", "Medium", "Hard", "Expert", "Master", "Extreme"],
-    filled: [30, 25, 20, 15, 5, 0],
+    filled: [30, 25, 15, 10, 5, 0],
     horizon: [750, 1500, 3500, 4000, 6000, 8000, 99999],
   },
   [GameMode.KILLER]: {

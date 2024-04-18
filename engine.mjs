@@ -5,9 +5,9 @@ import {
   GameConfig,
   TECHNIQUES,
   CellType,
-} from "./enums";
-import { fillAllEnableCandidates } from "./executors";
-import { checkBoardStatus } from "./techniques";
+} from "./enums.mjs";
+import { fillAllEnableCandidates } from "./executors.mjs";
+import { checkBoardStatus } from "./techniques.mjs";
 
 // check the background colors of each cell
 export const checkCellColors = (board, row, col, isNoteMode) => {
@@ -69,7 +69,7 @@ export const emphasisSameValue = (board) => {
                 b.i === i ||
                 b.j === j ||
                 (Math.floor(i / 3) === Math.floor(b.i / 3) &&
-                  Math.floor(j / 3) === Math.floor(b.j / 3)),
+                  Math.floor(j / 3) === Math.floor(b.j / 3))
             ).length > 1,
         }))
         .filter(({ isFailed }) => isFailed)
@@ -97,7 +97,7 @@ export const removeCandidatesFromCell = (board, row, col, isNoteMode) => {
         // remove related candidates
         if (isSameRow || isSameCol || isSameSquare)
           board[i][j].candidates = board[i][j].candidates.filter(
-            (item) => item !== selectedValue,
+            (item) => item !== selectedValue
           );
         if (isSameRow && isSameCol) board[i][j].candidates = [];
       }
@@ -106,23 +106,35 @@ export const removeCandidatesFromCell = (board, row, col, isNoteMode) => {
 };
 
 // create new game for each difficulty
-export const createNewGame = (mode = GameMode.CLASSIC, difficulty = "Easy") => {
+export const createNewGame = async (
+  mode = GameMode.CLASSIC,
+  difficulty = "Easy"
+) => {
   const difficultyIndex = GameConfig[mode].difficulty.indexOf(difficulty);
   const blanks = GameConfig[mode].filled[difficultyIndex];
   const minPoints = GameConfig[mode].horizon[difficultyIndex];
   const maxPoints = GameConfig[mode].horizon[difficultyIndex + 1];
+
+  let count = 0;
   while (true) {
     const newBoard = generateBlindSolvedBoard(
-      blanks + Math.floor(Math.random() * 20),
+      blanks + Math.floor(Math.random() * 30)
     );
 
     const formatedBoard = formatBoardCellsForGame(newBoard);
 
     // solve generated sudoku
     const { points } = checkDifficulty(formatedBoard);
-    console.log(points);
-    if (points && points > minPoints && points < maxPoints) {
+    if (points && points > minPoints) {
       return formatedBoard;
+    }
+
+    count++;
+    if (count % 3000 === 0) {
+      await new Promise((resolve) => {
+        console.log("sleep...");
+        setTimeout(resolve, 1000);
+      });
     }
   }
 };
@@ -269,7 +281,7 @@ const shuffle = (array) => array.sort(() => Math.random() - 0.5);
 
 export const pureClone = (item) =>
   JSON.parse(
-    JSON.stringify({ value: item.value, candidates: item.candidates }),
+    JSON.stringify({ value: item.value, candidates: item.candidates })
   );
 
 export const cloneBoard = (board) => JSON.parse(JSON.stringify(board));
@@ -280,7 +292,7 @@ const formatBoardCellsForGame = (board) =>
       value,
       candidates: [],
       type: value > 0 ? CellType.PUZZLE : CellType.NORMAL,
-    })),
+    }))
   );
 
 export const hasDuplicates = (arr) => new Set(arr).size !== arr.length;

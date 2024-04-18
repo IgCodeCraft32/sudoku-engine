@@ -1,5 +1,9 @@
-import { EffectType } from "./enums";
-import { empty1To9s, rowCol2SquareNum, squareNum2RowCol } from "./techniques";
+import { EffectType } from "./enums.mjs";
+import {
+  empty1To9s,
+  rowCol2SquareNum,
+  squareNum2RowCol,
+} from "./techniques.mjs";
 
 export const fillAllEnableCandidates = (board) => {
   for (let i = 0; i < 9; i++) {
@@ -14,7 +18,7 @@ export const fillAllEnableCandidates = (board) => {
           usedValues.add(
             board[squareOrigin[0] + (k % 3)][
               squareOrigin[1] + Math.floor(k / 3)
-            ].value,
+            ].value
           );
         }
         board[i][j].candidates = empty1To9s()
@@ -37,14 +41,14 @@ export const putValueOnCell = (board, answer) => {
     if (i == pos[1]) board[pos[0]][i].candidates = [];
     else
       board[pos[0]][i].candidates = board[pos[0]][i].candidates.filter(
-        (item) => item !== value,
+        (item) => item !== value
       );
 
     //  EffectType.COL
     if (i == pos[0]) board[i][pos[1]].candidates = [];
     else
       board[i][pos[1]].candidates = board[i][pos[1]].candidates.filter(
-        (item) => item !== value,
+        (item) => item !== value
       );
 
     //  EffectType.SQUARE
@@ -52,7 +56,7 @@ export const putValueOnCell = (board, answer) => {
     if (row == pos[0] && col == pos[1]) board[row][col].candidates = [];
     else
       board[row][col].candidates = board[row][col].candidates.filter(
-        (item) => item !== value,
+        (item) => item !== value
       );
   }
 };
@@ -65,7 +69,7 @@ export const eliminateCandidates = (board, answer) => {
       // continue when the pattern cells
       if (!cells.includes(i))
         board[index][i].candidates = board[index][i].candidates.filter(
-          (item) => !values.includes(item),
+          (item) => !values.includes(item)
         );
     }
   } else if (type === EffectType.COL) {
@@ -73,7 +77,7 @@ export const eliminateCandidates = (board, answer) => {
       // continue when the pattern cells
       if (!cells.includes(i))
         board[i][index].candidates = board[i][index].candidates.filter(
-          (item) => !values.includes(item),
+          (item) => !values.includes(item)
         );
     }
   } else if (type === EffectType.SQUARE) {
@@ -82,7 +86,7 @@ export const eliminateCandidates = (board, answer) => {
       // continue when the pattern cells
       if (!cells.includes(i))
         board[row][col].candidates = board[row][col].candidates.filter(
-          (item) => !values.includes(item),
+          (item) => !values.includes(item)
         );
     }
   }
@@ -107,20 +111,20 @@ export const eliminateSelfCandidates = (board, answer) => {
   if (type === EffectType.ROW) {
     cells.forEach((cell) => {
       board[index][cell].candidates = board[index][cell].candidates.filter(
-        (item) => !values.includes(item),
+        (item) => !values.includes(item)
       );
     });
   } else if (type === EffectType.COL) {
     cells.forEach((cell) => {
       board[cell][index].candidates = board[cell][index].candidates.filter(
-        (item) => !values.includes(item),
+        (item) => !values.includes(item)
       );
     });
   } else if (type === EffectType.SQUARE) {
     cells.forEach((cell) => {
       const { row, col } = squareNum2RowCol(index, cell);
       board[row][col].candidates = board[row][col].candidates.filter(
-        (item) => !values.includes(item),
+        (item) => !values.includes(item)
       );
     });
   }
