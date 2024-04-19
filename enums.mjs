@@ -32,8 +32,8 @@ export const GameMode = {
 export const GameConfig = {
   [GameMode.CLASSIC]: {
     difficulty: ["Easy", "Medium", "Hard", "Expert", "Master", "Extreme"],
-    filled: [30, 25, 15, 10, 5, 0],
-    horizon: [750, 1500, 3500, 4000, 6000, 8000, 99999],
+    filled: [20, 20, 20, 10, 10, 10],
+    horizon: [1, 3, 5, 6, 8, 10, 99],
   },
   [GameMode.KILLER]: {
     difficulty: ["Easy", "Medium", "Hard", "Expert"],
@@ -67,27 +67,27 @@ export const TECHNIQUES = [
     rate: 100,
   },
   {
-    name: "Obvious pairs",
-    check: findObviousPairs,
-    execute: eliminateCandidates,
-    rate: 200,
-  },
-  {
-    name: "Obvious triples",
-    check: findObviousTriples,
-    execute: eliminateCandidates,
-    rate: 400,
-  },
-  {
     name: "Hidden singles",
     check: findHiddenSingles,
     execute: executeHiddenSingles,
     rate: 200,
   },
   {
+    name: "Obvious pairs",
+    check: findObviousPairs,
+    execute: eliminateCandidates,
+    rate: 200,
+  },
+  {
     name: "Hidden pairs",
     check: findHiddenPairs,
     execute: eliminateSelfCandidates,
+    rate: 400,
+  },
+  {
+    name: "Obvious triples",
+    check: findObviousTriples,
+    execute: eliminateCandidates,
     rate: 400,
   },
   {

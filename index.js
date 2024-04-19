@@ -1,44 +1,58 @@
 import { createNewGame } from "./engine.mjs";
-import { GameMode } from "./enums.mjs";
+import { GameConfig, GameMode } from "./enums.mjs";
 import fs from "fs";
-
-const onlyValueString = (board) =>
-  board.flatMap((row) => row.map((cell) => cell.value)).join("");
 
 const sleep = (seconds) =>
   new Promise((resolve) => setTimeout(resolve, seconds));
 
-const remains = ["Extreme"];
-for (let i = 0; i < remains.length; i++) {
-  const difficulty = remains[i];
-  const count = 500;
-  var remainingCount = count;
-  const easySudoku = new Set();
+const remains = ["Easy", "Medium", "Hard", "Expert", "Master", "Extreme"];
+const count = 10000;
+var remainingCount = count;
+const sudokuMap = new Map();
 
-  function ensureDirectoryExists(directory) {
-    if (!fs.existsSync(directory)) {
-      fs.mkdirSync(directory, { recursive: true });
-    }
+function ensureDirectoryExists(directory) {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true });
   }
-  ensureDirectoryExists(`./puzzles/${difficulty}`.toLowerCase());
-
-  await (async () => {
-    while (remainingCount > 0) {
-      const board = onlyValueString(
-        await createNewGame(GameMode.CLASSIC, difficulty)
-      );
-      if (!easySudoku.has(board)) {
-        easySudoku.add(board);
-
-        const filePath = `./puzzles/${difficulty}/${
-          count - remainingCount
-        }`.toLowerCase();
-        fs.writeFileSync(filePath.toLowerCase(), board);
-
-        console.log("--", remainingCount, "--");
-        await sleep(50); // Wait for 1 second before generating the next puzzle
-        remainingCount--;
-      }
-    }
-  })();
 }
+remains.forEach((difficulty) =>
+  ensureDirectoryExists(`./puzzles/${difficulty}`.toLowerCase())
+);
+
+await (async () => {
+  while (remainingCount > 0) {
+    const { difficulty, board } = await createNewGame(GameMode.CLASSIC);
+    if (!sudokuMap.has(difficulty)) sudokuMap.set(difficulty, new Set([board]));
+    else sudokuMap.get(difficulty).add(board);
+
+    console.log("--", remainingCount, "--");
+    await sleep(1);
+    remainingCount--;
+  }
+})();
+
+const boardStacks = [[], [], [], [], [], []];
+sudokuMap.forEach((items, _key) => {
+  try {
+    const idx = GameConfig[GameMode.CLASSIC].horizon.findIndex(
+      (item) => item >= _key
+    );
+    boardStacks[idx] = [...boardStacks[idx], ...items];
+  } catch (e) {
+    console.error({ e });
+  }
+});
+
+boardStacks.forEach((items, idx) => {
+  try {
+    const difficulty = GameConfig[GameMode.CLASSIC].difficulty[idx];
+
+    console.log(difficulty, items.length);
+    items.forEach((board, idx) => {
+      const filePath = `./puzzles/${difficulty}/${idx}`.toLowerCase();
+      fs.writeFileSync(filePath.toLowerCase(), board);
+    });
+  } catch (e) {
+    console.error({ e });
+  }
+});

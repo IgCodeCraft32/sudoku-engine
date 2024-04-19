@@ -111,20 +111,20 @@ export const eliminateSelfCandidates = (board, answer) => {
   if (type === EffectType.ROW) {
     cells.forEach((cell) => {
       board[index][cell].candidates = board[index][cell].candidates.filter(
-        (item) => !values.includes(item)
+        (item) => values.includes(item)
       );
     });
   } else if (type === EffectType.COL) {
     cells.forEach((cell) => {
       board[cell][index].candidates = board[cell][index].candidates.filter(
-        (item) => !values.includes(item)
+        (item) => values.includes(item)
       );
     });
   } else if (type === EffectType.SQUARE) {
     cells.forEach((cell) => {
       const { row, col } = squareNum2RowCol(index, cell);
-      board[row][col].candidates = board[row][col].candidates.filter(
-        (item) => !values.includes(item)
+      board[row][col].candidates = board[row][col].candidates.filter((item) =>
+        values.includes(item)
       );
     });
   }

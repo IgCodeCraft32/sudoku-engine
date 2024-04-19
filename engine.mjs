@@ -105,32 +105,32 @@ export const removeCandidatesFromCell = (board, row, col, isNoteMode) => {
   }
 };
 
-// create new game for each difficulty
-export const createNewGame = async (
-  mode = GameMode.CLASSIC,
-  difficulty = "Easy"
-) => {
-  const difficultyIndex = GameConfig[mode].difficulty.indexOf(difficulty);
-  const blanks = GameConfig[mode].filled[difficultyIndex];
-  const minPoints = GameConfig[mode].horizon[difficultyIndex];
-  const maxPoints = GameConfig[mode].horizon[difficultyIndex + 1];
+const onlyValueString = (board) =>
+  board.flatMap((row) => row.map((cell) => cell.value)).join("");
 
+// create new game for each difficulty
+export const createNewGame = async (mode = GameMode.CLASSIC) => {
   let count = 0;
+  let tryCount = 0;
   while (true) {
+    tryCount++;
     const newBoard = generateBlindSolvedBoard(
-      blanks + Math.floor(Math.random() * 30)
+      15 + Math.floor(Math.random() * 20)
     );
 
     const formatedBoard = formatBoardCellsForGame(newBoard);
 
     // solve generated sudoku
-    const { points } = checkDifficulty(formatedBoard);
-    if (points && points > minPoints) {
-      return formatedBoard;
+    const { points, usedTechniques } = checkDifficulty(formatedBoard);
+    if (points) {
+      return {
+        difficulty: Math.max(...usedTechniques),
+        board: onlyValueString(formatedBoard),
+      };
     }
 
     count++;
-    if (count % 3000 === 0) {
+    if (count % 10000 === 0) {
       await new Promise((resolve) => {
         console.log("sleep...");
         setTimeout(resolve, 1000);
