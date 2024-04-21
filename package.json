@@ -9,5 +9,8 @@
   },
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "killer-sudoku-generator": "^1.1.2"
+  }
 }

@@ -179,6 +179,34 @@ export const checkDifficulty = (board) => {
   } else return false;
 };
 
+export const recoveryFullboard = (board) => {
+  if (!board) return false;
+
+  const boardClone = cloneBoard(board);
+
+  let currentTechnique = 0;
+
+  fillAllEnableCandidates(boardClone);
+
+  while (currentTechnique < TECHNIQUES.length) {
+    if (checkBoardStatus(boardClone)) break;
+
+    const answers = TECHNIQUES[currentTechnique].check(boardClone);
+    if (answers.length > 0) {
+      TECHNIQUES[currentTechnique].execute(boardClone, answers[0]);
+      currentTechnique = 0;
+      continue;
+    }
+
+    // seek next fuction
+    currentTechnique++;
+  }
+
+  if (checkBoardStatus(boardClone)) {
+    return boardClone;
+  } else return false;
+};
+
 export const oneHint = (board) => {
   if (!board) return false;
 
