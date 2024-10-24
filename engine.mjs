@@ -121,7 +121,7 @@ export const createNewGame = async (mode = GameMode.CLASSIC) => {
     const formatedBoard = formatBoardCellsForGame(newBoard);
 
     // solve generated sudoku
-    const { points, usedTechniques } = checkDifficulty(formatedBoard);
+    const { points, usedTechniques } = checkAvailability(formatedBoard);
     if (points) {
       return {
         difficulty: Math.max(...usedTechniques),
@@ -139,7 +139,7 @@ export const createNewGame = async (mode = GameMode.CLASSIC) => {
   }
 };
 
-export const checkDifficulty = (board) => {
+export const checkAvailability = (board) => {
   if (!board) return false;
 
   const boardClone = cloneBoard(board);
@@ -323,4 +323,6 @@ const formatBoardCellsForGame = (board) =>
     }))
   );
 
-export const hasDuplicates = (arr) => new Set(arr).size !== arr.length;
+export const hasDuplicates = (arr) =>
+  arr.includes(0) ||
+  (new Set(arr).size !== arr.length && new Set(arr).size < 9);
